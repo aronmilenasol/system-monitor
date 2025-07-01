@@ -18,5 +18,5 @@ $TOP_PROCESSES"
 
   echo -e "$ALERT"
   echo -e "$ALERT\n" >> "$CPU_LOG_FILE"
-  ./notify.sh "$ALERT"
+  "$(dirname "$0")/../bin/notify.sh" "$ALERT" "High CPU Usage in $(hostname)"
 fi
