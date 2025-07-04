@@ -10,13 +10,11 @@ CPU_USAGE=$(top -bn1 | grep -E "^%?Cpu" | awk '{print 100 - $8}')
 CPU_INT=${CPU_USAGE%.*}
 
 if [ "$CPU_INT" -ge "$THRESHOLD" ]; then
-  TOP_PROCESSES=$(ps -eo pid,comm,%cpu --sort=-%cpu | head -n 4 | tail -n 3)
-
-  ALERT="[$TIMESTAMP] High CPU detected: ${CPU_INT}% 
-Top 3 processes:
-$TOP_PROCESSES"
-
-  echo -e "$ALERT"
-  echo -e "$ALERT\n" >> "$CPU_LOG_FILE"
-  "$(dirname "$0")/../bin/notify.sh" "$ALERT" "High CPU Usage in $(hostname)"
+    TOP_PROCESSES=$(ps -eo pid,comm,%cpu --sort=-%cpu | sed 1d | grep -vE "(ps|cpu\.sh|monitor\.sh|grep)" | head -n 3)
+    
+    ALERT="[$TIMESTAMP] High CPU detected: ${CPU_INT}%\nTop 3 processes:\n$TOP_PROCESSES"
+    
+    echo -e "$ALERT"
+    echo -e "$ALERT\n" >> "$CPU_LOG_FILE"
+    "$(dirname "$0")/../bin/notify.sh" "$ALERT" "High CPU Usage in $(hostname)"
 fi
