@@ -1,0 +1,10 @@
+services:
+  system-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./modules:/app/modules
+      - ./bin:/app/bin
+      - ./logs:/app/logs
+    restart: unless-stopped
